@@ -2,9 +2,12 @@ package com.project.schoolmanagment.entity.concretes.business;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.project.schoolmanagment.entity.enums.Term;
 import java.time.LocalDate;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,6 +15,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,6 +46,10 @@ public class EducationTerm {
   @Column(name = "last_registration_date")
   @JsonFormat(shape = Shape.STRING,pattern = "yyyy-MM-dd")
   private LocalDate lastRegistrationDate;
+  
+  @OneToMany(mappedBy = "educationTerm",cascade = CascadeType.ALL)
+  @JsonProperty(access = Access.WRITE_ONLY)
+  private List<LessonProgram>lessonProgram;
   
   
 

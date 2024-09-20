@@ -1,9 +1,14 @@
 package com.project.schoolmanagment.entity.concretes.business;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.SecondaryTable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +30,10 @@ public class Lesson {
   private Integer creditScore;
   
   private Boolean isCompulsory;
+  
+  @JsonIgnore
+  @ManyToMany(mappedBy = "lessons",cascade = CascadeType.REMOVE)
+  private Set<LessonProgram>lessonPrograms;
   
 
 }

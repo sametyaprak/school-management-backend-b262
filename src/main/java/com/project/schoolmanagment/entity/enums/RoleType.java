@@ -1,5 +1,8 @@
 package com.project.schoolmanagment.entity.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum RoleType {
   
   ADMIN("Admin"),

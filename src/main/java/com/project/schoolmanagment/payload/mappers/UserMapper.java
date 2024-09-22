@@ -2,7 +2,10 @@ package com.project.schoolmanagment.payload.mappers;
 
 import com.project.schoolmanagment.entity.concretes.user.User;
 import com.project.schoolmanagment.entity.enums.RoleType;
+import com.project.schoolmanagment.exception.ResourceNotFoundException;
+import com.project.schoolmanagment.payload.messages.ErrorMessages;
 import com.project.schoolmanagment.payload.request.user.UserRequest;
+import com.project.schoolmanagment.payload.response.user.UserResponse;
 import com.project.schoolmanagment.service.user.UserRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -37,7 +40,37 @@ public class UserMapper {
         break;
       case "dean":
         user.setUserRole(userRoleService.getUserRole(RoleType.MANAGER));
+        break;
+      case "vicedean":
+        user.setUserRole(userRoleService.getUserRole(RoleType.ASSISTANT_MANAGER));
+        break;
+      case "student":
+        user.setUserRole(userRoleService.getUserRole(RoleType.STUDENT));
+        break;
+      case "teacher":
+        user.setUserRole(userRoleService.getUserRole(RoleType.TEACHER));
+        break;
+      default:
+        throw new ResourceNotFoundException(String.format(ErrorMessages.NOT_FOUND_USER_USER_ROLE_MESSAGE,userRole));
     }
+    return user;
+  }
+  
+  
+  public UserResponse mapUserToUserResponse(User user) {
+    return UserResponse.builder()
+        .id(user.getId())
+        .username(user.getUsername())
+        .name(user.getName())
+        .surname(user.getSurname())
+        .phoneNumber(user.getPhoneNumber())
+        .gender(user.getGender())
+        .birthday(user.getBirthday())
+        .birthPlace(user.getBirthplace())
+        .ssn(user.getSsn())
+        .email(user.getEmail())
+        .userRole(user.getUserRole().getRoleType().name())
+        .build();        
   }
 
 }

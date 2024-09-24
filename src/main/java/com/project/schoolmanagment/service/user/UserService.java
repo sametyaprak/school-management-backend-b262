@@ -3,10 +3,13 @@ package com.project.schoolmanagment.service.user;
 import com.project.schoolmanagment.entity.concretes.user.User;
 import com.project.schoolmanagment.payload.mappers.UserMapper;
 import com.project.schoolmanagment.payload.messages.SuccessMessages;
+import com.project.schoolmanagment.payload.request.abstracts.BaseUserRequest;
 import com.project.schoolmanagment.payload.request.user.UserRequest;
+import com.project.schoolmanagment.payload.response.abstracts.AbstractUserResponse;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.payload.response.user.UserResponse;
 import com.project.schoolmanagment.repository.user.UserRepository;
+import com.project.schoolmanagment.service.helper.MethodHelper;
 import com.project.schoolmanagment.service.helper.PageableHelper;
 import com.project.schoolmanagment.service.validator.UniquePropertyValidator;
 import java.util.List;
@@ -14,6 +17,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,6 +28,7 @@ public class UserService {
   private final UniquePropertyValidator uniquePropertyValidator;
   private final UserMapper userMapper;
   private final PageableHelper pageableHelper;
+  private final MethodHelper methodHelper;
 
   public ResponseMessage<UserResponse> saveUser(UserRequest userRequest, String userRole) {
     //validate unique properties
@@ -57,7 +62,29 @@ public class UserService {
         .collect(Collectors.toList());    
   }
 
-  public List<UserResponse> getUserById(String userId) {
+  public ResponseMessage<UserResponse> getUserById(Long userId) {
     //validate if id exist
+    User user = methodHelper.isUserExist(userId);
+    return ResponseMessage.<UserResponse>builder()
+        .message(SuccessMessages.USER_FOUND)
+        .returnBody(userMapper.mapUserToUserResponse(user))
+        .httpStatus(HttpStatus.OK)
+        .build();
+  }
+
+  public String deleteById(Long id) {
+    methodHelper.isUserExist(id);
+    userRepository.deleteById(id);
+    return SuccessMessages.USER_DELETE;
+  }
+
+  public ResponseMessage<AbstractUserResponse> updateUserById(UserRequest userRequest,
+      Long userId) {
+    //validate is user exist
+    User user = methodHelper.isUserExist(userId);
+    //build in users cannot be updated
+    methodHelper.checkBuildIn(user);
+    //validate unique properties
+    
   }
 }

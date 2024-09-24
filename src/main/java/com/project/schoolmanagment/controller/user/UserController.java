@@ -1,6 +1,7 @@
 package com.project.schoolmanagment.controller.user;
 
 import com.project.schoolmanagment.payload.request.user.UserRequest;
+import com.project.schoolmanagment.payload.response.abstracts.AbstractUserResponse;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.payload.response.user.UserResponse;
 import com.project.schoolmanagment.service.user.UserService;
@@ -9,9 +10,11 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,8 +51,20 @@ public class UserController {
   }
 
   @GetMapping("/getUserById/{userId}")
-  public List<UserResponse>getUserById(@PathVariable String userId){
+  public ResponseMessage<UserResponse>getUserById(@PathVariable Long userId){
     return userService.getUserById(userId);
+  }
+
+  @DeleteMapping("/deleteById/{id}")
+  public ResponseEntity<String>deleteById(@PathVariable("id") Long id){
+    return ResponseEntity.ok(userService.deleteById(id));
+  }
+  
+  @PutMapping("/update/{userId}")
+  public ResponseMessage<AbstractUserResponse>updateUserById(
+      @RequestBody @Valid UserRequest userRequest,
+      @PathVariable Long userId){
+    return userService.updateUserById(userRequest,userId);
   }
   
   

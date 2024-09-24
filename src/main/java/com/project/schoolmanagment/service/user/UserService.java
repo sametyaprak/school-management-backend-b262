@@ -78,13 +78,21 @@ public class UserService {
     return SuccessMessages.USER_DELETE;
   }
 
-  public ResponseMessage<AbstractUserResponse> updateUserById(UserRequest userRequest,
+  public ResponseMessage<UserResponse> updateUserById(UserRequest userRequest,
       Long userId) {
     //validate is user exist
     User user = methodHelper.isUserExist(userId);
     //build in users cannot be updated
     methodHelper.checkBuildIn(user);
     //validate unique properties
-    
+    uniquePropertyValidator.checkUniqueProperties(user,userRequest);
+    User userToSave = userMapper.mapUserRequestToUser(userRequest, user.getUserRole().getRoleName());
+    userToSave.setId(user.getId());
+    User savedUser = userRepository.save(userToSave);
+    return ResponseMessage.<UserResponse>builder()
+        .message(SuccessMessages.USER_UPDATE_MESSAGE)
+        .httpStatus(HttpStatus.OK)
+        .returnBody(userMapper.mapUserToUserResponse(savedUser))
+        .build();
   }
 }

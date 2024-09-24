@@ -4,6 +4,7 @@ import com.project.schoolmanagment.payload.request.user.UserRequest;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.payload.response.user.UserResponse;
 import com.project.schoolmanagment.service.user.UserService;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -40,5 +41,22 @@ public class UserController {
     Page<UserResponse>userResponses = userService.getUserByPage(page,size,sort,type,userRole);
     return ResponseEntity.ok(userResponses);
   }
+
+  @GetMapping("/getUserByName")
+  public List<UserResponse>getUserByName(@RequestParam (name = "name") String username){
+    return userService.getUserByName(username);
+  }
+
+  @GetMapping("/getUserById/{userId}")
+  public List<UserResponse>getUserById(@PathVariable String userId){
+    return userService.getUserById(userId);
+  }
+  
+  
+  
+  
+  
+  
+  
 
 }

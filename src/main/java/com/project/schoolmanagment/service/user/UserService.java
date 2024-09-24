@@ -9,6 +9,8 @@ import com.project.schoolmanagment.payload.response.user.UserResponse;
 import com.project.schoolmanagment.repository.user.UserRepository;
 import com.project.schoolmanagment.service.helper.PageableHelper;
 import com.project.schoolmanagment.service.validator.UniquePropertyValidator;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,5 +48,16 @@ public class UserService {
     Pageable pageable = pageableHelper.getPageable(page, size, sort, type);
     return userRepository.findByUserByRole(userRole,pageable)
         .map(userMapper::mapUserToUserResponse);    
+  }
+
+  public List<UserResponse> getUserByName(String username) {
+    return userRepository.findByUsernameContainingIgnoreCase(username)
+        .stream()
+        .map(userMapper::mapUserToUserResponse)
+        .collect(Collectors.toList());    
+  }
+
+  public List<UserResponse> getUserById(String userId) {
+    //validate if id exist
   }
 }

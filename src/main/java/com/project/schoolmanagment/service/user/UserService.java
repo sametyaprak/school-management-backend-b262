@@ -5,6 +5,7 @@ import com.project.schoolmanagment.payload.mappers.UserMapper;
 import com.project.schoolmanagment.payload.messages.SuccessMessages;
 import com.project.schoolmanagment.payload.request.abstracts.BaseUserRequest;
 import com.project.schoolmanagment.payload.request.user.UserRequest;
+import com.project.schoolmanagment.payload.request.user.UserRequestWithoutPassword;
 import com.project.schoolmanagment.payload.response.abstracts.AbstractUserResponse;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.payload.response.user.UserResponse;
@@ -14,6 +15,7 @@ import com.project.schoolmanagment.service.helper.PageableHelper;
 import com.project.schoolmanagment.service.validator.UniquePropertyValidator;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -94,5 +96,25 @@ public class UserService {
         .httpStatus(HttpStatus.OK)
         .returnBody(userMapper.mapUserToUserResponse(savedUser))
         .build();
+  }
+
+
+  public String updateLoggedInUser(UserRequestWithoutPassword userRequestWithoutPassword,
+      HttpServletRequest httpServletRequest) {
+    String username = (String) httpServletRequest.getAttribute("username");
+    User user = userRepository.findByUsername(username);
+    methodHelper.checkBuildIn(user);
+    uniquePropertyValidator.checkUniqueProperties(user,userRequestWithoutPassword);
+    user.setName(userRequestWithoutPassword.getName());
+    user.setSurname(userRequestWithoutPassword.getSurname());
+    user.setUsername(userRequestWithoutPassword.getUsername());
+    user.setBirthday(userRequestWithoutPassword.getBirthDay());
+    user.setBirthplace(userRequestWithoutPassword.getBirthPlace());
+    user.setEmail(userRequestWithoutPassword.getEmail());
+    user.setPhoneNumber(userRequestWithoutPassword.getPhoneNumber());
+    user.setGender(userRequestWithoutPassword.getGender());
+    user.setSsn(userRequestWithoutPassword.getSsn());
+    userRepository.save(user);
+    return SuccessMessages.USER_UPDATE;
   }
 }

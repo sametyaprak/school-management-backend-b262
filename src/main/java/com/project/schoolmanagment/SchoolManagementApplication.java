@@ -1,10 +1,13 @@
 package com.project.schoolmanagment;
 
 import com.project.schoolmanagment.entity.concretes.user.UserRole;
+import com.project.schoolmanagment.entity.enums.Gender;
 import com.project.schoolmanagment.entity.enums.RoleType;
+import com.project.schoolmanagment.payload.request.user.UserRequest;
 import com.project.schoolmanagment.repository.user.UserRoleRepository;
 import com.project.schoolmanagment.service.user.UserRoleService;
 import com.project.schoolmanagment.service.user.UserService;
+import java.time.LocalDate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -57,6 +60,24 @@ public class SchoolManagementApplication implements CommandLineRunner {
       teacher.setRoleName(RoleType.TEACHER.getName());
       userRoleRepository.save(teacher);
     }
+    if (userService.getAllUsers().isEmpty()){
+      userService.saveUser(getUserRequest(),RoleType.ADMIN.name);
+    }
+  }
+  
+  private static UserRequest getUserRequest(){
+    UserRequest userRequest = new UserRequest();
+    userRequest.setUsername("admin");
+    userRequest.setEmail("admin@admin.com");
+    userRequest.setSsn("111-11-1111");
+    userRequest.setPassword("Ankara06*");
+    userRequest.setName("adminName");
+    userRequest.setSurname("adminSurname");
+    userRequest.setPhoneNumber("111-111-1111");
+    userRequest.setGender(Gender.FEMALE);
+    userRequest.setBirthDay(LocalDate.of(1980,1,1));
+    userRequest.setBirthPlace("Texas");
+    return userRequest;
   }
 }
 

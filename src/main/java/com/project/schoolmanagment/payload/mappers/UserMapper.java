@@ -8,6 +8,7 @@ import com.project.schoolmanagment.payload.request.user.UserRequest;
 import com.project.schoolmanagment.payload.response.user.UserResponse;
 import com.project.schoolmanagment.service.user.UserRoleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,12 +17,14 @@ public class UserMapper {
   
   private final UserRoleService userRoleService;
   
+  private final PasswordEncoder passwordEncoder;
+  
   public User mapUserRequestToUser(UserRequest userRequest, String userRole) {
     User user = User.builder()
         .username(userRequest.getUsername())
         .name(userRequest.getName())
         .surname(userRequest.getSurname())
-        .password(userRequest.getPassword())
+        .password(passwordEncoder.encode(userRequest.getPassword()))
         .ssn(userRequest.getSsn())
         .birthday(userRequest.getBirthDay())
         .phoneNumber(userRequest.getPhoneNumber())

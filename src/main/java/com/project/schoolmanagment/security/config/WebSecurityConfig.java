@@ -30,6 +30,7 @@ public class WebSecurityConfig {
   
   private final AuthEntryPointJwt authEntryPointJwt;
   
+  @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     //CORD cross-origin resource sharing
     http.cors().and()

@@ -39,7 +39,7 @@ public class WebSecurityConfig {
         .and()
         //configure session management
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        //configure white list
+        //configure allowlist
         .and()
         .authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll()
         //other requests will be authenticated

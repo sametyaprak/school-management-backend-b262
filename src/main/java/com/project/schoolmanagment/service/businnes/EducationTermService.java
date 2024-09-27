@@ -20,6 +20,7 @@ public class EducationTermService {
   public ResponseMessage<EducationTermResponse> saveEducationTerm(
       EducationTermRequest educationTermRequest) {
     //validation
+    validateEducationTermDates(educationTermRequest);
     
   }
   
@@ -31,20 +32,15 @@ public class EducationTermService {
       throw new ConfictException(ErrorMessages.EDUCATION_TERM_IS_ALREADY_EXIST_BY_TERM_AND_YEAR_MESSAGE);
     }
     //validate not to have any conflict with other education terms
-    if(educationTermRepository.findByYear(educationTermRequest.getStartDate().getYear())
-        .stream()
-        .anyMatch(educationTerm ->
-            (educationTerm.getStartDate().equals(educationTermRequest.getStartDate())
-                || (educationTerm.getStartDate().isBefore(educationTermRequest.getStartDate())
-                && educationTerm.getEndDate().isAfter(educationTermRequest.getStartDate()))
-                || (educationTerm.getStartDate().isBefore(educationTermRequest.getEndDate())
-                && educationTerm.getEndDate().isAfter(educationTermRequest.getEndDate()))
-                || (educationTerm.getStartDate().isAfter(educationTermRequest.getStartDate())
-                && educationTerm.getEndDate().isBefore(educationTermRequest.getEndDate()))))) {
-      throw new BadRequestException(ErrorMessages.EDUCATION_TERM_CONFLICT_MESSAGE);
-    }
-    
+    educationTermRepository.findByYear(educationTermRequest.getStartDate().getYear())
+        .forEach(educationTerm -> {
+          if (educationTerm.getStartDate().isAfter(educationTermRequest.getEndDate())
+              || educationTerm.getEndDate().isBefore(educationTermRequest.getStartDate())) {
+            throw new BadRequestException(ErrorMessages.EDUCATION_TERM_CONFLICT_MESSAGE);
+          }          
+        });        
   }
+        
   
   
   private void validateEducationTermDatesForRequest(EducationTermRequest educationTermRequest) {

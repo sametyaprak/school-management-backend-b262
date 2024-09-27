@@ -29,4 +29,5 @@ public class EducationTermRequest {
   @NotNull(message ="Last Registration Date must not be empty")
   @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate lastRegistrationDate;
+  
 }

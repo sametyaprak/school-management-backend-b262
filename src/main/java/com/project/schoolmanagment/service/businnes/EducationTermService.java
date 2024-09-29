@@ -15,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class EducationTermService {
@@ -91,5 +94,23 @@ public class EducationTermService {
   public EducationTerm isEducationTermExist(Long id){
     return educationTermRepository.findById(id)
         .orElseThrow(()->new ResourceNotFoundException(String.format(ErrorMessages.EDUCATION_TERM_NOT_FOUND_MESSAGE,id)));
+  }
+  public EducationTermResponse findById(Long id) {
+    //check if education term exist
+    isEducationTermExist(id);
+
+    EducationTerm educationTerm = isEducationTermExist(id);
+
+    return educationTermMapper.mapEducationTermToEducationTermResponse(educationTerm);
+
+
+  }
+  public List<EducationTermResponse> getAllEducationTerms() {
+
+    return educationTermRepository.findAll().stream()
+            .map(educationTermMapper::mapEducationTermToEducationTermResponse)
+            .collect(Collectors.toList());
+
+
   }
 }

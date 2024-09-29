@@ -102,10 +102,8 @@ public class EducationTermService {
   // Uranus
    public Page<EducationTermResponse> getAllByPage(int page, int size, String sort, String type) {
           Pageable pageable = pageableHelper.getPageable(page, size, sort, type);
-
           // Fetch Paginated and sorted data from repository
           Page<EducationTerm> educationTerms = educationTermRepository.findAll(pageable);
-
           // User the mapper to map entities to DTOs
           return educationTerms.map(educationTermMapper::mapEducationTermToEducationTermResponse);
       }

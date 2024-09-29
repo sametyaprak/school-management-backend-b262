@@ -22,7 +22,9 @@ public interface EducationTermRepository extends JpaRepository<EducationTerm, Lo
 
   // Uranus
   @Query("SELECT e FROM EducationTerm e WHERE e.term= ?1")
-  Page<EducationTerm> findByEducationTermByPage(@Param("term") Pageable pageable);
+  Page<EducationTerm>findByEducationTermByPage(@Param("term") Pageable pageable);
+
+
 
 
 }

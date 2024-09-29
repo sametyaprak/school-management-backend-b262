@@ -48,7 +48,7 @@ public class EducationTermController {
   @GetMapping("/getAll")
   public List<EducationTermResponse> getAllEducationTerms(){
     return educationTermService.getAllEducationTerms();
-    //return null;
+
   }
   
 
@@ -57,7 +57,7 @@ public class EducationTermController {
   @GetMapping("/{id}")
   public EducationTermResponse getEducationTermById(@PathVariable Long id){
     return educationTermService.findById(id);
-    //return null;
+
   }
 
   //TODO URANUS

@@ -11,7 +11,10 @@ import com.project.schoolmanagment.payload.request.businnes.EducationTermRequest
 import com.project.schoolmanagment.payload.response.businnes.EducationTermResponse;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.repository.businnes.EducationTermRepository;
+import com.project.schoolmanagment.service.helper.PageableHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,7 @@ public class EducationTermService {
   
   private final EducationTermRepository educationTermRepository;
   private final EducationTermMapper educationTermMapper;
+  private final PageableHelper pageableHelper;
 
   public ResponseMessage<EducationTermResponse> saveEducationTerm(
       EducationTermRequest educationTermRequest) {
@@ -92,4 +96,17 @@ public class EducationTermService {
     return educationTermRepository.findById(id)
         .orElseThrow(()->new ResourceNotFoundException(String.format(ErrorMessages.EDUCATION_TERM_NOT_FOUND_MESSAGE,id)));
   }
+
+
+
+  // Uranus
+   public Page<EducationTermResponse> getAllByPage(int page, int size, String sort, String type) {
+          Pageable pageable = pageableHelper.getPageable(page, size, sort, type);
+
+          // Fetch Paginated and sorted data from repository
+          Page<EducationTerm> educationTerms = educationTermRepository.findAll(pageable);
+
+          // User the mapper to map entities to DTOs
+          return educationTerms.map(educationTermMapper::mapEducationTermToEducationTermResponse);
+      }
 }

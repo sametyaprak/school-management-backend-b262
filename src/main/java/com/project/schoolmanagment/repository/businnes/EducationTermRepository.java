@@ -3,8 +3,12 @@ package com.project.schoolmanagment.repository.businnes;
 import com.project.schoolmanagment.entity.concretes.business.EducationTerm;
 import com.project.schoolmanagment.entity.enums.Term;
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -15,5 +19,10 @@ public interface EducationTermRepository extends JpaRepository<EducationTerm, Lo
   
   @Query("select e from EducationTerm e where extract(year from e.startDate) =?1 ")
   List<EducationTerm>findByYear(int year);
+
+  // Uranus
+  @Query("SELECT e FROM EducationTerm e WHERE e.term= ?1")
+  Page<EducationTerm> findByEducationTermByPage(@Param("term") Pageable pageable);
+
 
 }

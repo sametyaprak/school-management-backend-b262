@@ -58,4 +58,20 @@ public class LessonService {
     Lesson savedLesson = lessonRepository.save(updatedLesson);
     return lessonMapper.mapLessonToLessonResponse(savedLesson);
   }
+
+  public ResponseMessage<LessonResponse> findLessonByName(String lessonName) {
+    if(lessonRepository.getByLessonNameEqualsIgnoreCase(lessonName).isPresent()){
+      Lesson lesson = lessonRepository.getByLessonNameEqualsIgnoreCase(lessonName).get();
+      return ResponseMessage.<LessonResponse>builder()
+          .message(SuccessMessages.LESSON_FOUND)
+          .returnBody(lessonMapper.mapLessonToLessonResponse(lesson))
+          .httpStatus(HttpStatus.OK)
+          .build();
+    } else {
+      return ResponseMessage.<LessonResponse>builder()
+          .message(String.format(ErrorMessages.NOT_FOUND_LESSON_MESSAGE,lessonName))
+          .httpStatus(HttpStatus.OK)
+          .build();
+    }
+  }
 }

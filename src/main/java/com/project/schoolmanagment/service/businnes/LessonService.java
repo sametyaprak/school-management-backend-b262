@@ -92,4 +92,15 @@ public class LessonService {
         .map(this::isLessonExistById)
         .collect(Collectors.toSet());
   }
+
+  public ResponseMessage deleteLesson(Long lessonId) {
+    //validate if lesson exists
+    Lesson lesson = isLessonExistById(lessonId);
+    lessonRepository.deleteById(lessonId);
+    return ResponseMessage.<LessonResponse>builder()
+            .message(SuccessMessages.LESSON_DELETE)
+            .httpStatus(HttpStatus.OK)
+            .build();
+
+  }
 }

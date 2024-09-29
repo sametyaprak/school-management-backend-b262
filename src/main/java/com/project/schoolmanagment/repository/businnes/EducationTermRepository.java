@@ -20,11 +20,4 @@ public interface EducationTermRepository extends JpaRepository<EducationTerm, Lo
   @Query("select e from EducationTerm e where extract(year from e.startDate) =?1 ")
   List<EducationTerm>findByYear(int year);
 
-  // Uranus
-  @Query("SELECT e FROM EducationTerm e WHERE e.term= ?1")
-  Page<EducationTerm>findByEducationTermByPage(@Param("term") Pageable pageable);
-
-
-
-
 }

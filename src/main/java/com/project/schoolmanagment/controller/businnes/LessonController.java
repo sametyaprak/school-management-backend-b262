@@ -1,10 +1,12 @@
 package com.project.schoolmanagment.controller.businnes;
 
+import com.project.schoolmanagment.entity.concretes.business.Lesson;
 import com.project.schoolmanagment.payload.mappers.LessonMapper;
 import com.project.schoolmanagment.payload.request.businnes.LessonRequest;
 import com.project.schoolmanagment.payload.response.businnes.LessonResponse;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.service.businnes.LessonService;
+import java.util.Set;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -67,6 +69,14 @@ public class LessonController {
       @RequestParam(value = "type",defaultValue = "desc") String type
   ){
     return lessonService.getLessonByPage(page,size,sort,type);
+  }
+
+
+  @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
+  @GetMapping("/getLessonByIdSet")
+  public Set<Lesson>getAllLessonByIdSet(
+      @RequestParam(name = "lessonId") Set<Long>idSet) {
+    return lessonService.getLessonByIdSet(idSet);
   }
   
   

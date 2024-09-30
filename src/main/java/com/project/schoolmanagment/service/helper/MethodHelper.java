@@ -33,5 +33,11 @@ public class MethodHelper {
     }
     return user;
   }
+  
+  public void checkIsAdvisor(User user){
+    if(user.getIsAdvisor()){
+      throw new BadRequestException(String.format(ErrorMessages.NOT_FOUND_USER_MESSAGE,user.getId()));
+    }
+  }
 
 }

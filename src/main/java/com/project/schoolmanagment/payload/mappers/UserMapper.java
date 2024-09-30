@@ -4,6 +4,7 @@ import com.project.schoolmanagment.entity.concretes.user.User;
 import com.project.schoolmanagment.entity.enums.RoleType;
 import com.project.schoolmanagment.exception.ResourceNotFoundException;
 import com.project.schoolmanagment.payload.messages.ErrorMessages;
+import com.project.schoolmanagment.payload.request.abstracts.BaseUserRequest;
 import com.project.schoolmanagment.payload.request.user.UserRequest;
 import com.project.schoolmanagment.payload.response.user.UserResponse;
 import com.project.schoolmanagment.service.user.UserRoleService;
@@ -19,7 +20,7 @@ public class UserMapper {
   
   private final PasswordEncoder passwordEncoder;
   
-  public User mapUserRequestToUser(UserRequest userRequest, String userRole) {
+  public User mapUserRequestToUser(BaseUserRequest userRequest, String userRole) {
     User user = User.builder()
         .username(userRequest.getUsername())
         .name(userRequest.getName())

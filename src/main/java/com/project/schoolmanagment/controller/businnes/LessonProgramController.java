@@ -5,9 +5,11 @@ import com.project.schoolmanagment.payload.request.businnes.LessonProgramRequest
 import com.project.schoolmanagment.payload.response.businnes.LessonProgramResponse;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.service.businnes.LessonProgramService;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +29,29 @@ public class LessonProgramController {
       @RequestBody @Valid LessonProgramRequest lessonProgramRequest) {
     return lessonProgramService.saveLessonProgram(lessonProgramRequest);
   }
+  
+  //TODO
+  //HULYA get all lesson programs
+  
+  //TODO
+  //RUMEYSA get by Id
+  
+  //TODO
+  //URANUS delete by Id
+
+  @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Student','Teacher')")
+  @GetMapping("/getAllUnassigned")
+  public List<LessonProgramResponse>getAllUnassigned(){
+    return lessonProgramService.getAllUnassigned();    
+  }
+
+  @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Student','Teacher')")
+  @GetMapping("/getAllAssigned")
+  public List<LessonProgramResponse>getAllAssigned(){
+    return lessonProgramService.getAllAssigned();
+  }
+  
+  
+  
 
 }

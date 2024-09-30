@@ -10,7 +10,9 @@ import com.project.schoolmanagment.payload.response.businnes.LessonProgramRespon
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.repository.businnes.LessonProgramRepository;
 import com.project.schoolmanagment.service.validator.TimeValidator;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.SecondaryTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,5 +50,19 @@ public class LessonProgramService {
         .httpStatus(HttpStatus.CREATED)
         .message(SuccessMessages.LESSON_PROGRAM_SAVE)
         .build();    
+  }
+
+  public List<LessonProgramResponse> getAllUnassigned() {
+    return lessonProgramRepository.findByUsers_IdNull()
+        .stream()
+        .map(lessonProgramMapper::mapLessonProgramToLessonProgramResponse)
+        .collect(Collectors.toList());  
+  }
+
+  public List<LessonProgramResponse> getAllAssigned() {
+    return lessonProgramRepository.findByUsers_IdNotNull()
+        .stream()
+        .map(lessonProgramMapper::mapLessonProgramToLessonProgramResponse)
+        .collect(Collectors.toList());
   }
 }

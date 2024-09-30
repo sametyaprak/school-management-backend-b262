@@ -113,7 +113,6 @@ public class EducationTermService {
 
 
   }
-
   public ResponseMessage deleteById(Long id) {
     isEducationTermExist(id);
     educationTermRepository.deleteById(id);

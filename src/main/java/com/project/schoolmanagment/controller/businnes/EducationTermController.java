@@ -47,8 +47,8 @@ public class EducationTermController {
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher')")
   @GetMapping("/getAll")
   public List<EducationTermResponse> getAllEducationTerms(){
-    //return educationTermService.getAllEducationTerms();
-    return null;
+    return educationTermService.getAllEducationTerms();
+
   }
   
 
@@ -56,8 +56,8 @@ public class EducationTermController {
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher')")
   @GetMapping("/{id}")
   public EducationTermResponse getEducationTermById(@PathVariable Long id){
-    //return educationTermService.findById(id);
-    return null;
+    return educationTermService.findById(id);
+
   }
 
   //TODO URANUS

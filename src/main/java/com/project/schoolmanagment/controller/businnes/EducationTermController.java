@@ -76,7 +76,7 @@ public class EducationTermController {
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher')")
   @DeleteMapping("/delete/{id}")
   public ResponseMessage deleteEducationTerm(@PathVariable Long id){
-    return educationTermService.deleteById(id);//
+    return educationTermService.deleteById(id);
 
   }
 

@@ -102,13 +102,10 @@ public class EducationTermService {
   public EducationTermResponse findById(Long id) {
     //check if education term exist
     isEducationTermExist(id);
-
     EducationTerm educationTerm = isEducationTermExist(id);
-
     return educationTermMapper.mapEducationTermToEducationTermResponse(educationTerm);
-
-
   }
+  
   public List<EducationTermResponse> getAllEducationTerms() {
     return educationTermRepository.findAll().stream()
             .map(educationTermMapper::mapEducationTermToEducationTermResponse)

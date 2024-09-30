@@ -121,4 +121,5 @@ public class EducationTermService {
             .message(SuccessMessages.EDUCATION_TERM_DELETE)
             .build();
   }
+
 }

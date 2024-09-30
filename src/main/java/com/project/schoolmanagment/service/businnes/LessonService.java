@@ -1,106 +1,107 @@
 package com.project.schoolmanagment.service.businnes;
 
-import com.project.schoolmanagment.entity.concretes.business.Lesson;
+import com.project.schoolmanagment.entity.concretes.business.EducationTerm;
+import com.project.schoolmanagment.exception.BadRequestException;
 import com.project.schoolmanagment.exception.ConfictException;
 import com.project.schoolmanagment.exception.ResourceNotFoundException;
-import com.project.schoolmanagment.payload.mappers.LessonMapper;
+import com.project.schoolmanagment.payload.mappers.EducationTermMapper;
 import com.project.schoolmanagment.payload.messages.ErrorMessages;
 import com.project.schoolmanagment.payload.messages.SuccessMessages;
-import com.project.schoolmanagment.payload.request.businnes.LessonRequest;
-import com.project.schoolmanagment.payload.response.businnes.LessonResponse;
+import com.project.schoolmanagment.payload.request.businnes.EducationTermRequest;
+import com.project.schoolmanagment.payload.response.businnes.EducationTermResponse;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
-import com.project.schoolmanagment.repository.businnes.LessonRepository;
-import com.project.schoolmanagment.service.helper.PageableHelper;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.project.schoolmanagment.repository.businnes.EducationTermRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+
 @Service
 @RequiredArgsConstructor
-public class LessonService {
-  
-  private final LessonRepository lessonRepository;
-  private final LessonMapper lessonMapper;
-  private final PageableHelper pageableHelper;
+public class EducationTermService {
 
-  public ResponseMessage<LessonResponse> saveLesson(LessonRequest lessonRequest) {
-    //validate - lesson name must be unique
-    isLessonExistByLessonName(lessonRequest.getLessonName());
-    //map DTO->entity
-    Lesson lesson = lessonMapper.mapLessonRequestToLesson(lessonRequest);
-    Lesson savedLesson = lessonRepository.save(lesson);
-    return ResponseMessage.<LessonResponse>builder()
-        .returnBody(lessonMapper.mapLessonToLessonResponse(savedLesson))
-        .httpStatus(HttpStatus.CREATED)
-        .message(SuccessMessages.LESSON_SAVE)
-        .build();    
-  }
-  
-  private void  isLessonExistByLessonName(String lessonName){
-    if(lessonRepository.getByLessonNameEqualsIgnoreCase(lessonName).isPresent()){
-      throw new ConfictException(String.format(ErrorMessages.ALREADY_CREATED_LESSON_MESSAGE,lessonName));
+    private final EducationTermRepository educationTermRepository;
+    private final EducationTermMapper educationTermMapper;
+
+
+    public ResponseMessage<EducationTermResponse> saveEducationTerm(
+            EducationTermRequest educationTermRequest) {
+        //validation
+        validateEducationTermDates(educationTermRequest);
+        //mapping
+        EducationTerm educationTerm = educationTermMapper.mapEducationTermRequestToEducationTerm(educationTermRequest);
+        EducationTerm savedEducationTerm = educationTermRepository.save(educationTerm);
+
+        return ResponseMessage.<EducationTermResponse>builder()
+                .message(SuccessMessages.EDUCATION_TERM_SAVE)
+                .returnBody(educationTermMapper.mapEducationTermToEducationTermResponse(savedEducationTerm))
+                .httpStatus(HttpStatus.CREATED)
+                .build();
     }
-  }
-  private Lesson isLessonExistById(Long id){
-    return lessonRepository.findById(id)
-        .orElseThrow(()-> new ResourceNotFoundException(String.format(ErrorMessages.NOT_FOUND_LESSON_MESSAGE,id)));
-  }
 
-
-  public LessonResponse updateLesson(Long lessonId, LessonRequest lessonRequest) {
-    //validate if lesson exists
-    Lesson lesson = isLessonExistById(lessonId);
-    //lesson name must be unique
-    if(!lesson.getLessonName().equals(lessonRequest.getLessonName())){
-      //user is changing lesson name
-      isLessonExistByLessonName(lessonRequest.getLessonName());
+    private void validateEducationTermDates(EducationTermRequest educationTermRequest) {
+        validateEducationTermDatesForRequest(educationTermRequest);
+        //only one education term can exist in a year
+        if (educationTermRepository.existsByTermAndYear(
+                educationTermRequest.getTerm(), educationTermRequest.getStartDate().getYear())) {
+            throw new ConfictException(ErrorMessages.EDUCATION_TERM_IS_ALREADY_EXIST_BY_TERM_AND_YEAR_MESSAGE);
+        }
+        //validate not to have any conflict with other education terms
+        educationTermRepository.findByYear(educationTermRequest.getStartDate().getYear())
+                .forEach(educationTerm -> {
+                    if (!educationTerm.getStartDate().isAfter(educationTermRequest.getEndDate())
+                            || educationTerm.getEndDate().isBefore(educationTermRequest.getStartDate())) {
+                        throw new BadRequestException(ErrorMessages.EDUCATION_TERM_CONFLICT_MESSAGE);
+                    }
+                });
     }
-    Lesson updatedLesson = lessonMapper.mapLessonRequestToLesson(lessonRequest);
-    updatedLesson.setId(lesson.getId());
-    Lesson savedLesson = lessonRepository.save(updatedLesson);
-    return lessonMapper.mapLessonToLessonResponse(savedLesson);
-  }
 
-  public ResponseMessage<LessonResponse> findLessonByName(String lessonName) {
-    if(lessonRepository.getByLessonNameEqualsIgnoreCase(lessonName).isPresent()){
-      Lesson lesson = lessonRepository.getByLessonNameEqualsIgnoreCase(lessonName).get();
-      return ResponseMessage.<LessonResponse>builder()
-          .message(SuccessMessages.LESSON_FOUND)
-          .returnBody(lessonMapper.mapLessonToLessonResponse(lesson))
-          .httpStatus(HttpStatus.OK)
-          .build();
-    } else {
-      return ResponseMessage.<LessonResponse>builder()
-          .message(String.format(ErrorMessages.NOT_FOUND_LESSON_MESSAGE,lessonName))
-          .httpStatus(HttpStatus.OK)
-          .build();
+    private void validateEducationTermDatesForRequest(EducationTermRequest educationTermRequest) {
+        //reg<start
+        if (educationTermRequest.getLastRegistrationDate().isAfter(educationTermRequest.getStartDate())) {
+            throw new ConfictException(ErrorMessages.EDUCATION_START_DATE_IS_EARLIER_THAN_LAST_REGISTRATION_DATE);
+        }
+        //end>start
+        if (educationTermRequest.getEndDate().isBefore(educationTermRequest.getStartDate())) {
+            throw new ConfictException(ErrorMessages.EDUCATION_END_DATE_IS_EARLIER_THAN_START_DATE);
+        }
     }
-  }
 
-  public Page<LessonResponse> getLessonByPage(int page, int size, String sort, String type) {
-    Pageable pageable = pageableHelper.getPageable(page, size, sort, type);
-    return lessonRepository.findAll(pageable)
-        .map(lessonMapper::mapLessonToLessonResponse);
-  }
 
-  public Set<Lesson> getLessonByIdSet(Set<Long> idSet) {
-    return idSet.stream()
-        .map(this::isLessonExistById)
-        .collect(Collectors.toSet());
-  }
+    public ResponseMessage<EducationTermResponse> updateEducationTerm(
+            EducationTermRequest educationTermRequest, Long id) {
+        //check if education term exists
+        isEducationTermExist(id);
+        //validate dates
+        validateEducationTermDatesForRequest(educationTermRequest);
+        //map
+        EducationTerm term = educationTermMapper.mapEducationTermRequestToEducationTerm(educationTermRequest);
+        term.setId(term.getId());
+        //save to DB
+        EducationTerm savedEducationTerm = educationTermRepository.save(term);
+        //return by mapping it to DTO
+        return ResponseMessage.<EducationTermResponse>builder()
+                .message(SuccessMessages.EDUCATION_TERM_UPDATE)
+                .returnBody(educationTermMapper.mapEducationTermToEducationTermResponse(savedEducationTerm))
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
 
-  public ResponseMessage deleteLesson(Long lessonId) {
-    //validate if lesson exists
-    Lesson lesson = isLessonExistById(lessonId);
-    lessonRepository.deleteById(lessonId);
-    return ResponseMessage.<LessonResponse>builder()
-            .message(SuccessMessages.LESSON_DELETE)
-            .httpStatus(HttpStatus.OK)
-            .build();
 
-  }
+    public EducationTerm isEducationTermExist(Long id) {
+        return educationTermRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(ErrorMessages.EDUCATION_TERM_NOT_FOUND_MESSAGE, id)));
+    }
+
+
+    public ResponseMessage deleteById(Long id) {
+        isEducationTermExist(id);
+        educationTermRepository.deleteById(id);
+        return ResponseMessage.<EducationTermResponse>builder()
+                .message(SuccessMessages.EDUCATION_TERM_DELETE)
+                .build();
+    }
+
+
 }
+

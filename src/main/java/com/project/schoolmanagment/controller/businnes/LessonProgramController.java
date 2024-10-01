@@ -29,9 +29,12 @@ public class LessonProgramController {
       @RequestBody @Valid LessonProgramRequest lessonProgramRequest) {
     return lessonProgramService.saveLessonProgram(lessonProgramRequest);
   }
-  
-  //TODO
-  //HULYA get all lesson programs
+
+  @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher','Student')")
+  @GetMapping("/getAll")
+  public List<LessonProgramResponse> getAllLessonPrograms(){
+    return lessonProgramService.getAllLessonPrograms();
+  }
   
   //TODO
   //RUMEYSA get by Id

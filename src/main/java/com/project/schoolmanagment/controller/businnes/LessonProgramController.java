@@ -16,7 +16,6 @@ public class LessonProgramController {
 
   private final LessonProgramService lessonProgramService;
 
-
   //TODO
   //RUMEYSA get by Id
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Student','Teacher')")

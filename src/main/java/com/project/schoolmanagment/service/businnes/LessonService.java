@@ -4,6 +4,7 @@ import com.project.schoolmanagment.entity.concretes.business.Lesson;
 import com.project.schoolmanagment.exception.ResourceNotFoundException;
 import com.project.schoolmanagment.payload.messages.ErrorMessages;
 
+import com.project.schoolmanagment.repository.businnes.LessonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LessonService {
 
+  private final LessonRepository lessonRepository;
   public Set<Lesson> getLessonByIdSet(Set<Long> idSet) {
     return idSet.stream()
             .map(this::findLessonById)  // Fetch each lesson by ID

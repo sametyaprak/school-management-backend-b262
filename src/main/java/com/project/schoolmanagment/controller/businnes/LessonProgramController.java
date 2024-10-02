@@ -1,10 +1,8 @@
 package com.project.schoolmanagment.controller.businnes;
 
-
 import com.project.schoolmanagment.entity.concretes.business.LessonProgram;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.service.businnes.LessonProgramService;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +21,6 @@ public class LessonProgramController {
   public ResponseMessage<LessonProgram> getLessonById(@PathVariable Long id) {
     return lessonProgramService.getLessonById(id);
   }
-
 }
 
 

@@ -10,6 +10,7 @@ import com.project.schoolmanagment.payload.request.user.StudentUpdateRequest;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.payload.response.user.StudentResponse;
 import com.project.schoolmanagment.repository.user.UserRepository;
+import com.project.schoolmanagment.repository.user.UserRoleRepository;
 import com.project.schoolmanagment.service.helper.MethodHelper;
 import com.project.schoolmanagment.service.validator.UniquePropertyValidator;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,8 @@ public class StudentService {
   private final UniquePropertyValidator uniquePropertyValidator;
   private final UserMapper userMapper;
   private final UserRepository userRepository;
+  private final UserRoleRepository userRoleRepository;
+  private final UserRoleService userRoleService;
 
   public ResponseMessage<StudentResponse> saveStudent(StudentRequest studentRequest) {
     //do we really have a user with this ID

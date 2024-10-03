@@ -104,6 +104,7 @@ public class UserMapper {
         .username(studentUpdateRequest.getUsername())
         .name(studentUpdateRequest.getName())
         .ssn(studentUpdateRequest.getSsn())
+        .userRole(userRoleService.getUserRole(RoleType.STUDENT))
         .surname(studentUpdateRequest.getSurname())
         .birthday(studentUpdateRequest.getBirthDay())
         .birthplace(studentUpdateRequest.getBirthPlace())

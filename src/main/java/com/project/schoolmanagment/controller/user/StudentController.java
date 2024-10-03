@@ -1,13 +1,20 @@
 package com.project.schoolmanagment.controller.user;
 
 import com.project.schoolmanagment.payload.request.user.StudentRequest;
+import com.project.schoolmanagment.payload.request.user.StudentUpdateRequest;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.payload.response.user.StudentResponse;
 import com.project.schoolmanagment.service.user.StudentService;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,8 +27,26 @@ public class StudentController {
 
   @PreAuthorize("hasAnyAuthority('Admin')")
   @PostMapping("/save")
-  public ResponseMessage<StudentResponse>save(StudentRequest studentRequest) {
+  public ResponseMessage<StudentResponse>save(@RequestBody @Valid StudentRequest studentRequest) {
     return studentService.saveStudent(studentRequest);
   }
+
+  @PreAuthorize("hasAnyAuthority('Student')")
+  @PatchMapping("/update")
+  public ResponseEntity<String>updateStudent(
+      @RequestBody @Valid StudentUpdateRequest studentUpdateRequest,
+      HttpServletRequest httpServletRequest){
+    return studentService.updateStudent(studentUpdateRequest,httpServletRequest);
+  }
+
+  @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
+  @PatchMapping("/update/{userId}")
+  public ResponseMessage<StudentResponse>updateStudentByManager(
+      @PathVariable Long userId,
+      @RequestBody @Valid StudentRequest studentRequest){
+    return studentService.updateStudentByManager(userId,studentRequest);
+  }
+  
+  
 
 }

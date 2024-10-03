@@ -5,7 +5,9 @@ import com.project.schoolmanagment.entity.enums.RoleType;
 import com.project.schoolmanagment.exception.ResourceNotFoundException;
 import com.project.schoolmanagment.payload.messages.ErrorMessages;
 import com.project.schoolmanagment.payload.request.abstracts.BaseUserRequest;
+import com.project.schoolmanagment.payload.request.user.StudentUpdateRequest;
 import com.project.schoolmanagment.payload.request.user.UserRequest;
+import com.project.schoolmanagment.payload.response.user.StudentResponse;
 import com.project.schoolmanagment.payload.response.user.UserResponse;
 import com.project.schoolmanagment.service.user.UserRoleService;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +77,42 @@ public class UserMapper {
         .email(user.getEmail())
         .userRole(user.getUserRole().getRoleType().name())
         .build();        
+  }
+
+  public StudentResponse mapUserToStudentResponse(User student){
+    return StudentResponse.builder()
+        .id(student.getId())
+        .username(student.getUsername())
+        .name(student.getName())
+        .surname(student.getSurname())
+        .birthday(student.getBirthday())
+        .ssn(student.getSsn())
+        .birthPlace(student.getBirthplace())
+        .phoneNumber(student.getPhoneNumber())
+        .gender(student.getGender())
+        .email(student.getEmail())
+        .studentNumber(student.getStudentNumber())
+        .motherName(student.getMotherName())
+        .fatherName(student.getFatherName())
+        .lessonProgramSet(student.getLessonProgramList())
+        .isActive(student.isActive())
+        .build();
+  }
+
+  public User mapStudentUpdateRequestToUser(StudentUpdateRequest studentUpdateRequest){
+    return User.builder()
+        .username(studentUpdateRequest.getUsername())
+        .name(studentUpdateRequest.getName())
+        .ssn(studentUpdateRequest.getSsn())
+        .surname(studentUpdateRequest.getSurname())
+        .birthday(studentUpdateRequest.getBirthDay())
+        .birthplace(studentUpdateRequest.getBirthPlace())
+        .phoneNumber(studentUpdateRequest.getPhoneNumber())
+        .gender(studentUpdateRequest.getGender())
+        .email(studentUpdateRequest.getEmail())
+        .fatherName(studentUpdateRequest.getFatherName())
+        .motherName(studentUpdateRequest.getMotherName())
+        .build();
   }
 
 }

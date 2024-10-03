@@ -3,7 +3,9 @@ package com.project.schoolmanagment.service.businnes;
 import com.project.schoolmanagment.entity.concretes.business.EducationTerm;
 import com.project.schoolmanagment.entity.concretes.business.Lesson;
 import com.project.schoolmanagment.entity.concretes.business.LessonProgram;
+import com.project.schoolmanagment.exception.BadRequestException;
 import com.project.schoolmanagment.payload.mappers.LessonProgramMapper;
+import com.project.schoolmanagment.payload.messages.ErrorMessages;
 import com.project.schoolmanagment.payload.messages.SuccessMessages;
 import com.project.schoolmanagment.payload.request.businnes.LessonProgramRequest;
 import com.project.schoolmanagment.payload.response.businnes.LessonProgramResponse;
@@ -70,5 +72,13 @@ public class LessonProgramService {
     return lessonProgramRepository.findAll().stream()
             .map(lessonProgramMapper::mapLessonProgramToLessonProgramResponse)
             .collect(Collectors.toList());
+  }
+  
+  public Set<LessonProgram>getLessonProgramById(Set<Long>lessonIdSet){
+    Set<LessonProgram>lessonProgramSet = lessonProgramRepository.getLessonProgramByIdList(lessonIdSet);
+    if(lessonProgramSet.isEmpty()){
+      throw new BadRequestException(ErrorMessages.NOT_FOUND_LESSON_PROGRAM_MESSAGE_WITHOUT_ID_INFO);
+    }
+    return lessonProgramSet;
   }
 }

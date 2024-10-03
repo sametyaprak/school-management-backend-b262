@@ -1,6 +1,5 @@
 package com.project.schoolmanagment.controller.user;
 
-import com.project.schoolmanagment.payload.request.businnes.AddLessonProgram;
 import com.project.schoolmanagment.payload.request.businnes.AddLessonProgramForStudent;
 import com.project.schoolmanagment.payload.request.user.StudentRequest;
 import com.project.schoolmanagment.payload.request.user.StudentUpdateRequest;
@@ -12,7 +11,6 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;

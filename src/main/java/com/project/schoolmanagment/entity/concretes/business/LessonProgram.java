@@ -67,5 +67,11 @@ public class LessonProgram {
     users.forEach(user -> user.getLessonProgramList().remove(this));
   }
   
+  public LessonProgram(Day day,LocalTime start,LocalTime stop){
+    this.day = day;
+    this.startTime = start;
+    this.stopTime = stop;
+  }
+  
   
 }

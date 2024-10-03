@@ -1,18 +1,25 @@
 package com.project.schoolmanagment.service.user;
 
+import com.project.schoolmanagment.entity.concretes.business.LessonProgram;
 import com.project.schoolmanagment.entity.concretes.user.User;
 import com.project.schoolmanagment.entity.concretes.user.UserRole;
 import com.project.schoolmanagment.entity.enums.RoleType;
 import com.project.schoolmanagment.payload.mappers.UserMapper;
 import com.project.schoolmanagment.payload.messages.SuccessMessages;
+import com.project.schoolmanagment.payload.request.businnes.AddLessonProgramForStudent;
 import com.project.schoolmanagment.payload.request.user.StudentRequest;
 import com.project.schoolmanagment.payload.request.user.StudentUpdateRequest;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.payload.response.user.StudentResponse;
 import com.project.schoolmanagment.repository.user.UserRepository;
 import com.project.schoolmanagment.repository.user.UserRoleRepository;
+import com.project.schoolmanagment.service.businnes.LessonProgramService;
 import com.project.schoolmanagment.service.helper.MethodHelper;
+import com.project.schoolmanagment.service.validator.TimeValidator;
 import com.project.schoolmanagment.service.validator.UniquePropertyValidator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,6 +36,8 @@ public class StudentService {
   private final UserRepository userRepository;
   private final UserRoleRepository userRoleRepository;
   private final UserRoleService userRoleService;
+  private final LessonProgramService lessonProgramService;
+  private final TimeValidator timeValidator;
 
   public ResponseMessage<StudentResponse> saveStudent(StudentRequest studentRequest) {
     //do we really have a user with this ID
@@ -96,5 +105,36 @@ public class StudentService {
         .returnBody(userMapper.mapUserToStudentResponse(userRepository.save(studentToUpdate)))
         .httpStatus(HttpStatus.OK)
         .build();    
+  }
+
+  public ResponseMessage<StudentResponse> addLessonProgram(HttpServletRequest servletRequest,
+      AddLessonProgramForStudent addLessonProgramForStudent) {
+    String username = (String) servletRequest.getAttribute("username");
+    User loggedInStudent = methodHelper.loadByUsername(username);
+    //new lesson program for a student
+    Set<LessonProgram> lessonProgramSet = lessonProgramService.getLessonProgramById(addLessonProgramForStudent.getLessonProgramId());
+    //existing lesson program for a student
+    Set<LessonProgram> existingLessonProgram = loggedInStudent.getLessonProgramList();
+    existingLessonProgram.addAll(lessonProgramSet);
+    timeValidator.checkDuplicateLessonProgram(existingLessonProgram);
+    loggedInStudent.setLessonProgramList(existingLessonProgram);
+    User updatedStudent = userRepository.save(loggedInStudent);
+    return ResponseMessage.<StudentResponse>builder()
+        .returnBody(userMapper.mapUserToStudentResponse(updatedStudent))
+        .message(SuccessMessages.LESSON_PROGRAM_ADD_TO_STUDENT)
+        .httpStatus(HttpStatus.OK)
+        .build();
+  }
+
+  public ResponseMessage changeStatus(Long id, boolean status) {
+    //validate if user exist
+    User student = methodHelper.isUserExist(id);
+    methodHelper.checkRole(student,RoleType.STUDENT);
+    student.setActive(status);
+    userRepository.save(student);
+    return ResponseMessage.builder()
+        .message(("Student is " + (status ? "active" : "passive")))
+        .httpStatus(HttpStatus.OK)
+        .build();
   }
 }

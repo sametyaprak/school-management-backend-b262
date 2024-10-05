@@ -11,7 +11,9 @@ import com.project.schoolmanagment.repository.businnes.MeetingRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -26,7 +28,7 @@ public class MeetingHelper {
   public void checkMeetingConflicts(
       List<Long>studentIdList, Long teacherId, LocalDate meetingDate,
       LocalTime startTime, LocalTime stopTime){
-    List<Meeting>existingMeetings = new ArrayList<>();
+    Set<Meeting> existingMeetings = new HashSet<>();
     for (Long id:studentIdList){
       //check a student really exist + is a student
       methodHelper.checkRole(methodHelper.isUserExist(id), RoleType.STUDENT);
@@ -34,16 +36,21 @@ public class MeetingHelper {
     }
     existingMeetings.addAll(meetingRepository.getByAdvisoryTeacher_IdEquals(teacherId));
     for (Meeting meet:existingMeetings){
-      LocalTime existingStartTime = meet.getStartTime();
-      LocalTime existingStopTime = meet.getStopTime();
-      if(meet.getDate().equals(meetingDate) && (
-          (startTime.isAfter(existingStartTime) && startTime.isBefore(existingStopTime)) ||
-              (stopTime.isAfter(existingStartTime) && stopTime.isBefore(existingStopTime)) ||
-              (startTime.isBefore(existingStartTime) && stopTime.isAfter(existingStopTime)) ||
-              (startTime.equals(existingStartTime) || stopTime.equals(existingStopTime))
-      )) {
-        throw new ConfictException(ErrorMessages.MEET_HOURS_CONFLICT);
+      if (existingMeetings.size()==1){
+        continue;
+      } else {
+        LocalTime existingStartTime = meet.getStartTime();
+        LocalTime existingStopTime = meet.getStopTime();
+        if(meet.getDate().equals(meetingDate) && (
+            (startTime.isAfter(existingStartTime) && startTime.isBefore(existingStopTime)) ||
+                (stopTime.isAfter(existingStartTime) && stopTime.isBefore(existingStopTime)) ||
+                (startTime.isBefore(existingStartTime) && stopTime.isAfter(existingStopTime)) ||
+                (startTime.equals(existingStartTime) || stopTime.equals(existingStopTime))
+        )) {
+          throw new ConfictException(ErrorMessages.MEET_HOURS_CONFLICT);
+        }
       }
+
     }
   }
   

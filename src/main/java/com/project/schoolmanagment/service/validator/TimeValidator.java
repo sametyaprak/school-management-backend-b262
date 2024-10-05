@@ -22,6 +22,9 @@ public class TimeValidator {
       throw new BadRequestException(ErrorMessages.TIME_NOT_VALID_MESSAGE);
     }
   }
+  //9-12
+  //8-11 -> conflict
+  
   
   public void checkDuplicateLessonProgram(Set<LessonProgram>lessonPrograms){
     Set<String>uniqueLessonProgramDays = new HashSet<>();

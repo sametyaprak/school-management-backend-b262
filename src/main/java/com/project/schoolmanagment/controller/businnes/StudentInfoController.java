@@ -1,6 +1,8 @@
 package com.project.schoolmanagment.controller.businnes;
 
+import com.project.schoolmanagment.payload.request.businnes.StudentInfoRequest;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
+import com.project.schoolmanagment.payload.response.businnes.StudentInfoResponse;
 import com.project.schoolmanagment.service.businnes.StudentInfoService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;

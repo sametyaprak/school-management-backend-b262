@@ -1,7 +1,7 @@
 package com.project.schoolmanagment.service.businnes;
 
 import com.project.schoolmanagment.entity.concretes.business.Lesson;
-import com.project.schoolmanagment.exception.ConfictException;
+import com.project.schoolmanagment.exception.ConflictException;
 import com.project.schoolmanagment.exception.ResourceNotFoundException;
 import com.project.schoolmanagment.payload.mappers.LessonMapper;
 import com.project.schoolmanagment.payload.messages.ErrorMessages;
@@ -42,7 +42,7 @@ public class LessonService {
   
   private void  isLessonExistByLessonName(String lessonName){
     if(lessonRepository.getByLessonNameEqualsIgnoreCase(lessonName).isPresent()){
-      throw new ConfictException(String.format(ErrorMessages.ALREADY_CREATED_LESSON_MESSAGE,lessonName));
+      throw new ConflictException(String.format(ErrorMessages.ALREADY_CREATED_LESSON_MESSAGE,lessonName));
     }
   }
   private Lesson isLessonExistById(Long id){

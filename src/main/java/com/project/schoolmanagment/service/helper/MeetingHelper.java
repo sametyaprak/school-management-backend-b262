@@ -4,13 +4,12 @@ import com.project.schoolmanagment.entity.concretes.business.Meeting;
 import com.project.schoolmanagment.entity.concretes.user.User;
 import com.project.schoolmanagment.entity.enums.RoleType;
 import com.project.schoolmanagment.exception.BadRequestException;
-import com.project.schoolmanagment.exception.ConfictException;
+import com.project.schoolmanagment.exception.ConflictException;
 import com.project.schoolmanagment.exception.ResourceNotFoundException;
 import com.project.schoolmanagment.payload.messages.ErrorMessages;
 import com.project.schoolmanagment.repository.businnes.MeetingRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,7 +46,7 @@ public class MeetingHelper {
                 (startTime.isBefore(existingStartTime) && stopTime.isAfter(existingStopTime)) ||
                 (startTime.equals(existingStartTime) || stopTime.equals(existingStopTime))
         )) {
-          throw new ConfictException(ErrorMessages.MEET_HOURS_CONFLICT);
+          throw new ConflictException(ErrorMessages.MEET_HOURS_CONFLICT);
         }
       }
 

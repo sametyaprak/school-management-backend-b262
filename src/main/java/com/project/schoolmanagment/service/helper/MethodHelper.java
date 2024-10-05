@@ -3,7 +3,7 @@ package com.project.schoolmanagment.service.helper;
 import com.project.schoolmanagment.entity.concretes.user.User;
 import com.project.schoolmanagment.entity.enums.RoleType;
 import com.project.schoolmanagment.exception.BadRequestException;
-import com.project.schoolmanagment.exception.ConfictException;
+import com.project.schoolmanagment.exception.ConflictException;
 import com.project.schoolmanagment.exception.ResourceNotFoundException;
 import com.project.schoolmanagment.payload.messages.ErrorMessages;
 import com.project.schoolmanagment.repository.user.UserRepository;
@@ -45,7 +45,7 @@ public class MethodHelper {
   
   public void checkRole(User user, RoleType roleType){
     if(!user.getUserRole().getRoleType().equals(roleType)){
-      throw new ConfictException(ErrorMessages.NOT_HAVE_EXPECTED_ROLE_USER);
+      throw new ConflictException(ErrorMessages.NOT_HAVE_EXPECTED_ROLE_USER);
     }
   }
   

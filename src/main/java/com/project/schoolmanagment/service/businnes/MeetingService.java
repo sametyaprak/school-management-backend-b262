@@ -81,4 +81,13 @@ public class MeetingService {
         .httpStatus(HttpStatus.OK)
         .build();
   }
+
+  public ResponseMessage deleteById(Long meetingId) {
+    meetingHelper.isMeetingExistById(meetingId);
+    meetingRepository.deleteById(meetingId);
+    return ResponseMessage.builder()
+        .message(SuccessMessages.MEET_DELETE)
+        .httpStatus(HttpStatus.OK)
+        .build();    
+  }
 }

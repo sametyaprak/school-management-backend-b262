@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,6 +39,12 @@ public class MeetingController {
       @PathVariable Long meetingId,
       HttpServletRequest servletRequest){
     return meetingService.update(meetingRequest,meetingId,servletRequest);
+  }
+
+  @PreAuthorize("hasAnyAuthority('Admin','Teacher')")
+  @DeleteMapping("/delete/{meetingId}")
+  public ResponseMessage deleteById(@PathVariable Long meetingId){
+    return meetingService.deleteById(meetingId);
   }
   
 

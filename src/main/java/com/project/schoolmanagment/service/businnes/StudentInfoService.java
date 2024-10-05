@@ -2,11 +2,14 @@ package com.project.schoolmanagment.service.businnes;
 
 import com.project.schoolmanagment.entity.concretes.business.EducationTerm;
 import com.project.schoolmanagment.entity.concretes.business.Lesson;
+import com.project.schoolmanagment.entity.concretes.business.StudentInfo;
 import com.project.schoolmanagment.entity.concretes.user.User;
 import com.project.schoolmanagment.entity.enums.Note;
 import com.project.schoolmanagment.entity.enums.RoleType;
 import com.project.schoolmanagment.exception.ConflictException;
+import com.project.schoolmanagment.payload.mappers.StudentInfoMapper;
 import com.project.schoolmanagment.payload.messages.ErrorMessages;
+import com.project.schoolmanagment.payload.messages.SuccessMessages;
 import com.project.schoolmanagment.payload.request.businnes.StudentInfoRequest;
 import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.payload.response.businnes.StudentInfoResponse;
@@ -16,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +30,7 @@ public class StudentInfoService {
   private final LessonService lessonService;
   private final EducationTermService educationTermService;
   private final StudentInfoRepository studentInfoRepository;
+  private final StudentInfoMapper studentInfoMapper;
   
   @Value("${midterm.exam.impact.percentage}")
   private Double midtermPercentage;
@@ -51,7 +56,22 @@ public class StudentInfoService {
     Note note = checkLetterGrade(
         calculateAverage(studentInfoRequest.getMidtermExam(),
                           studentInfoRequest.getFinalExam()));
-    
+    //map DTO to entity
+    StudentInfo studentInfo = studentInfoMapper.mapStudentInfoRequestToStudentInfo(
+        studentInfoRequest,
+        note,
+        calculateAverage(studentInfoRequest.getMidtermExam(), studentInfoRequest.getFinalExam()));
+    //set missing properties
+    studentInfo.setStudent(student);
+    studentInfo.setEducationTerm(educationTerm);
+    studentInfo.setTeacher(teacher);
+    studentInfo.setLesson(lesson);
+    StudentInfo savedStudentInfo = studentInfoRepository.save(studentInfo);
+    return ResponseMessage.<StudentInfoResponse>builder()
+        .message(SuccessMessages.STUDENT_INFO_SAVE)
+        .returnBody(studentInfoMapper.mapStudentInfoToStudentInfoResponse(savedStudentInfo))
+        .httpStatus(HttpStatus.OK)
+        .build();
   }
   
   

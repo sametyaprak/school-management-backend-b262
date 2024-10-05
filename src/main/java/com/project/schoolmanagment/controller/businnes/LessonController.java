@@ -44,8 +44,7 @@ public class LessonController {
       @RequestBody @Valid LessonRequest lessonRequest){
     return ResponseEntity.ok(lessonService.updateLesson(lessonId,lessonRequest));
   }
-
-  //TODO
+  
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
   @DeleteMapping("/delete/{lessonId}")
   public ResponseMessage deleteLesson(@PathVariable Long lessonId) {

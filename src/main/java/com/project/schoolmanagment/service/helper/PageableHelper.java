@@ -15,5 +15,9 @@ public class PageableHelper {
     }
     return pageable;
   }
+  
+  public Pageable getPageable(int page, int size){
+   return PageRequest.of(page,size).withSort(Sort.by("Id").descending());
+  }
 
 }

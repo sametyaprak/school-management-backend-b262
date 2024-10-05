@@ -10,10 +10,13 @@ import com.project.schoolmanagment.payload.response.businnes.ResponseMessage;
 import com.project.schoolmanagment.repository.businnes.MeetingRepository;
 import com.project.schoolmanagment.service.helper.MeetingHelper;
 import com.project.schoolmanagment.service.helper.MethodHelper;
+import com.project.schoolmanagment.service.helper.PageableHelper;
 import com.project.schoolmanagment.service.validator.TimeValidator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,7 @@ public class MeetingService {
   private final MeetingHelper meetingHelper;
   private final MeetingMapper meetingMapper;
   private final MeetingRepository meetingRepository;
+  private final PageableHelper pageableHelper;
 
   public ResponseMessage<MeetingResponse> saveMeeting(HttpServletRequest httpServletRequest,
       MeetingRequest meetingRequest) {
@@ -82,12 +86,22 @@ public class MeetingService {
         .build();
   }
 
-  public ResponseMessage deleteById(Long meetingId) {
+  public ResponseMessage<Object> deleteById(Long meetingId) {
     meetingHelper.isMeetingExistById(meetingId);
     meetingRepository.deleteById(meetingId);
     return ResponseMessage.builder()
         .message(SuccessMessages.MEET_DELETE)
         .httpStatus(HttpStatus.OK)
         .build();    
+  }
+
+  public Page<MeetingResponse> getAllByPageTeacher(int page, int size,
+      HttpServletRequest httpServletRequest) {
+    String username = (String) httpServletRequest.getAttribute("username");
+    User teacher = methodHelper.loadByUsername(username);
+    methodHelper.checkIsAdvisor(teacher);
+    Pageable pageable = pageableHelper.getPageable(page, size);
+    return meetingRepository.getByAdvisoryTeacher_IdEquals(teacher.getId(),pageable)
+        .map(meetingMapper::mapMeetingToMeetingResponse);
   }
 }

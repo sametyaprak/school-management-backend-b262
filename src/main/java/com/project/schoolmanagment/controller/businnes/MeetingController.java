@@ -60,23 +60,19 @@ public class MeetingController {
     return meetingService.getAllByPageTeacher(page,size,httpServletRequest);
   }
 
-
-  //TODO HULYA
   @PreAuthorize("hasAnyAuthority('Teacher','Student')")
   @GetMapping("/getAll")
   public List<MeetingResponse> getAllMeetings(HttpServletRequest httpServletRequest){
-    //return meetingService.getAll(httpServletRequest);
-    return null;
+    return meetingService.getAll(httpServletRequest);
+
   }
 
-  //TODO HULYA
   @PreAuthorize("hasAnyAuthority('Admin')")
   @GetMapping("/getAllByPage")
   public Page<MeetingResponse>getAllByPage(
       @RequestParam(value = "page") int page,
       @RequestParam(value = "size") int size){
-    //return meetingService.getAllByPage(page, size);
-    return null;
+    return meetingService.getAllByPage(page, size);
   }
   
 

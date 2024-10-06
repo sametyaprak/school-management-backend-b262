@@ -13,6 +13,7 @@ import com.project.schoolmanagment.service.helper.MethodHelper;
 import com.project.schoolmanagment.service.helper.PageableHelper;
 import com.project.schoolmanagment.service.validator.TimeValidator;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -103,5 +104,17 @@ public class MeetingService {
     Pageable pageable = pageableHelper.getPageable(page, size);
     return meetingRepository.getByAdvisoryTeacher_IdEquals(teacher.getId(),pageable)
         .map(meetingMapper::mapMeetingToMeetingResponse);
+  }
+
+    public List<MeetingResponse> getAll(HttpServletRequest httpServletRequest) {
+      return meetingRepository.findAll().stream()
+              .map(meetingMapper::mapMeetingToMeetingResponse)
+              .collect(Collectors.toList());
+    }
+
+  public Page<MeetingResponse> getAllByPage(int page, int size) {
+    Pageable pageable = pageableHelper.getPageable(page,size);
+    return meetingRepository.findAll(pageable)
+            .map(meetingMapper::mapMeetingToMeetingResponse);
   }
 }

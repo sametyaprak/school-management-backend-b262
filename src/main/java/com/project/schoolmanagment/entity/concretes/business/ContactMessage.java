@@ -19,10 +19,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-//TODO learn about serialization and de-serialization
 public class ContactMessage implements Serializable {
-
-	//TODO check all generation types and strategies
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	//better to give a naming contactMessageId, contactMessageName, contactMessageSubject

@@ -56,6 +56,7 @@ public class StudentInfoController {
     return studentInfoService.findByStudentInfoByStudentId(studentId);
   }
 
+  //TODO HULYA
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
   @GetMapping("/findStundentInfoByPage")
   public Page<StudentInfoResponse> findStundentInfoByPage(
@@ -67,6 +68,7 @@ public class StudentInfoController {
     return null;
   }
 
+  //TODO HULYA
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
   @GetMapping("/findById/{studentInfoId}")
   public StudentInfoResponse getStudentInfoById(@PathVariable Long studentInfoId) {

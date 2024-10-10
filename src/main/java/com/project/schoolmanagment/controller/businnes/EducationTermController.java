@@ -43,7 +43,6 @@ public class EducationTermController {
     return educationTermService.updateEducationTerm(educationTermRequest,id);
   }
   
-  //TODO HULYA
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher')")
   @GetMapping("/getAll")
   public List<EducationTermResponse> getAllEducationTerms(){
@@ -51,8 +50,7 @@ public class EducationTermController {
 
   }
   
-
-  //TODO HULYA
+  
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher')")
   @GetMapping("/{id}")
   public EducationTermResponse getEducationTermById(@PathVariable Long id){
@@ -60,7 +58,7 @@ public class EducationTermController {
 
   }
 
-  //TODO URANUS
+
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher')")
   @GetMapping("/getAllEducationTermsByPage")
   public Page<EducationTermResponse> getAllEducationTermsByPage(
@@ -71,12 +69,11 @@ public class EducationTermController {
     return educationTermService.getAllByPage(page,size,sort,type);
   }
 
-  //TODO RUMEYSA
+
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher')")
   @DeleteMapping("/delete/{id}")
   public ResponseMessage deleteEducationTerm(@PathVariable Long id){
-    //return educationTermService.deleteById(id);
-    return null;
+    return educationTermService.deleteById(id);
   }
 
 }

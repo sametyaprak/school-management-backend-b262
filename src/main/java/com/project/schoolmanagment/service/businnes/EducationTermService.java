@@ -120,4 +120,13 @@ public class EducationTermService {
           // User the mapper to map entities to DTOs
           return educationTerms.map(educationTermMapper::mapEducationTermToEducationTermResponse);
       }
+
+  public ResponseMessage deleteById(Long id) {
+    isEducationTermExist(id);
+    educationTermRepository.deleteById(id);
+    return ResponseMessage.builder()
+        .message(SuccessMessages.EDUCATION_TERM_DELETE)
+        .httpStatus(HttpStatus.OK)
+        .build();
+  }
 }

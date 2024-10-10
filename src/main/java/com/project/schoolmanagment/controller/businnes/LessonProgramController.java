@@ -35,12 +35,11 @@ public class LessonProgramController {
   public List<LessonProgramResponse> getAllLessonPrograms(){
     return lessonProgramService.getAllLessonPrograms();
   }
+  //TODO
+  //HULYA get by Id
   
   //TODO
-  //RUMEYSA get by Id
-  
-  //TODO
-  //URANUS delete by Id
+  //HULYA delete by Id
 
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Student','Teacher')")
   @GetMapping("/getAllUnassigned")

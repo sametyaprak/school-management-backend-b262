@@ -171,6 +171,17 @@ public class StudentInfoService {
         .collect(Collectors.toList());    
   }
 
+  public Page<StudentInfoResponse> findStundentInfoByPage(int page, int size, String sort, String type) {
+    Pageable pageable = pageableHelper.getPageable(page, size, sort, type);
+    return studentInfoRepository.findAll(pageable)
+            .map(studentInfoMapper::mapStudentInfoToStudentInfoResponse);
+  }
+  public StudentInfoResponse findById(Long studentInfoId) {
+
+    StudentInfo studentInfo = isStudentInfoExist(studentInfoId);
+    return studentInfoMapper.mapStudentInfoToStudentInfoResponse(studentInfo);
+  }
+
   public Page<StudentInfoResponse> findByTeacherOrStudentByPage(HttpServletRequest servletRequest, int page, int size) {
     Pageable pageable = pageableHelper.getPageable(page,size);
     String username = (String) servletRequest.getAttribute("username");

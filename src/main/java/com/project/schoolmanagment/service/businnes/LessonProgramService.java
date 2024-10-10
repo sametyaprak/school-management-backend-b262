@@ -81,4 +81,18 @@ public class LessonProgramService {
     }
     return lessonProgramSet;
   }
+
+  public LessonProgramResponse findById(Long id) {
+    LessonProgram lessonProgram = lessonProgramRepository.findById(id);
+    return lessonProgramMapper.mapLessonProgramToLessonProgramResponse(lessonProgram);
+  }
+
+  public ResponseMessage deleteLessonProgramById(Long id) {
+    lessonProgramRepository.existsById(id);
+    lessonProgramRepository.deleteById(id);
+    return ResponseMessage.builder()
+            .message(SuccessMessages.LESSON_PROGRAM_DELETE)
+            .httpStatus(HttpStatus.OK)
+            .build();
+  }
 }

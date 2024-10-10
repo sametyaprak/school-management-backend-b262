@@ -9,11 +9,7 @@ import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/lessonPrograms")
@@ -35,11 +31,18 @@ public class LessonProgramController {
   public List<LessonProgramResponse> getAllLessonPrograms(){
     return lessonProgramService.getAllLessonPrograms();
   }
-  //TODO
-  //HULYA get by Id
-  
-  //TODO
-  //HULYA delete by Id
+
+  @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher','Student')")
+  @GetMapping("getLessonProgram/{id}")
+  public LessonProgramResponse getLessonProgramById(@PathVariable Long id){
+    return lessonProgramService.findById(id);
+  }
+
+  @PreAuthorize("hasAnyAuthority('Admin','Teacher')")
+  @DeleteMapping("/delete/{id}")
+  public ResponseMessage deleteLessonProgramById(@PathVariable Long id){
+    return lessonProgramService.deleteLessonProgramById(id);
+  }
 
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Student','Teacher')")
   @GetMapping("/getAllUnassigned")

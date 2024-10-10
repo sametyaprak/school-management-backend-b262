@@ -56,7 +56,6 @@ public class StudentInfoController {
     return studentInfoService.findByStudentInfoByStudentId(studentId);
   }
 
-  //TODO HULYA
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
   @GetMapping("/findStundentInfoByPage")
   public Page<StudentInfoResponse> findStundentInfoByPage(
@@ -64,16 +63,13 @@ public class StudentInfoController {
       @RequestParam(value = "size", defaultValue = "10") int size,
       @RequestParam(value = "sort", defaultValue = "absentee") String sort,
       @RequestParam(value = "type", defaultValue = "desc") String type) {
-    //return studentInfoService.findStundentInfoByPage(page, size, sort, type);
-    return null;
+    return studentInfoService.findStundentInfoByPage(page, size, sort, type);
   }
 
-  //TODO HULYA
   @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
   @GetMapping("/findById/{studentInfoId}")
   public StudentInfoResponse getStudentInfoById(@PathVariable Long studentInfoId) {
-    //return studentInfoService.findById(studentInfoId);
-    return null;
+    return studentInfoService.findById(studentInfoId);
   }
 
   @PreAuthorize("hasAnyAuthority('Teacher','Student')")
